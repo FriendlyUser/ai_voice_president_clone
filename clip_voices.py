@@ -128,7 +128,7 @@ def main(args):
         # convert to mp3
         # use subprocess to run ffmpeg
         # ffmpeg -i video.mp4 -b:a 192K -vn music.mp3
-        result = run(["ffmpeg", "-i", f"{name}_{index}.mp4", "-b:a", "192K", "-vn", f"{name}_{index}.mp3"])
+        result = run(["ffmpeg", "-i", f"{name}_{index}.mp4", "-ac", "2", "-f", "wav", f"{name}_{index}.wav"])
 
 if __name__ == "__main__":
     # argparser to get url
@@ -139,3 +139,10 @@ if __name__ == "__main__":
     with open (args.cfg, "r") as f:
         cfg = json.load(f)
     main(cfg)
+
+    for f in os.listdir():
+        if f.endswith(".mp4"):
+            os.remove(f)
+        if f.endswith(".wav"):
+            # move to audio
+            os.rename(f, f"audio/{f}")
