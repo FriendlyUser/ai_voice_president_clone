@@ -1,0 +1,21 @@
+{
+    "url": "https://www.youtube.com/watch?v=f0UB06v7yLY&ab_channel=CNN",
+    "name": "trump",
+    "clips": [
+        {
+            "start": 0,
+            "end": 6.2,
+            "text": "This is the first clip"
+        },
+        {
+            "start": 45.5,
+            "end": 52.5,
+            "text": "This is the second clip"
+        },
+        {
+            "start": 59,
+            "end": 68.7,
+            "text": "This is the third clip"
+        }
+    ]
+}
