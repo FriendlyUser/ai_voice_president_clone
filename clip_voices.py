@@ -3,6 +3,7 @@ import ffmpeg
 from yt_dlp import YoutubeDL
 import argparse
 import json
+import os
 from subprocess import PIPE, run
 
 audio_folder = "audio"
@@ -94,6 +95,9 @@ def get_video(url: str, config: dict):
     )
 
 def get_file_from_yurl(data: dict):
+    for f in os.listdir():
+        if f.endswith(".mp4"):
+            os.remove(f)
     url = data.get("url", "https://www.youtube.com/watch?v=f0UB06v7yLY&ab_channel=CNN")
     metadata = get_video_metadata(url)
     print(metadata)
@@ -112,20 +116,19 @@ def main(args):
     filename = get_file_from_yurl(args)
     # perform clipping with ffmpeg
     # ffmpeg -i input.mp4 -ss 00:00:30 -to 00:00:40 -c copy output.mp4
-
+    # remove all .mp4 in root directory
     # iterate across clips
     clips = args.get("clips", [])
     for index, clip in enumerate(clips):
         start = clip.get("start", 0)
         end = clip.get("end", 10)
         name = clip.get("name", "clip")
-        (
-            ffmpeg
-            .input(filename)
-            .filter("trim", start=format_timecode(start), end=format_timecode(end))
-            .output(f"{name}_{index}.mp4")
-            .run()
-        )
+        #  ffmpeg -i input.mp4 -ss 00:05:20 -t 00:10:00 -c:v copy -c:a copy output1.mp4
+        trim_result = run(["ffmpeg", "-i", filename, "-ss", format_timecode(start), "-t", format_timecode(end), "-c:v", "copy", "-c:a", "copy", f"{name}_{index}.mp4"])
+        # convert to mp3
+        # use subprocess to run ffmpeg
+        # ffmpeg -i video.mp4 -b:a 192K -vn music.mp3
+        result = run(["ffmpeg", "-i", f"{name}_{index}.mp4", "-b:a", "192K", "-vn", f"{name}_{index}.mp3"])
 
 if __name__ == "__main__":
     # argparser to get url
